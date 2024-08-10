@@ -10,9 +10,9 @@ import java.util.Scanner;
 
 public class Repo implements Serializable {
 
-	public enum Subject {
+	/*public enum Subject {
 		Math, Science, History, Geography
-	}
+	}*/
 
 	private String[] answers;
 	private Question[] questions;
