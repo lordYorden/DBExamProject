@@ -1,5 +1,6 @@
 package dbproject.DBClasses;
 
+import dbproject.Answer;
 import dbproject.Question;
 import dbproject.Subject;
 import dbproject.Question.Difficulty;
@@ -35,7 +36,26 @@ public class DBWrapper implements Wrapper{
 
     @Override
     public Question getQuestionBylD(int ID) {
-        return null;
+        DBQuestion question = null;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question where sid = ?) as question natural join difficulty) natural join type");
+            stmt.setInt(1, subject.getID());
+            ResultSet res = stmt.executeQuery();
+
+            if (res.next()) {
+                int id = res.getInt("qid");
+                String text = res.getString("text");
+                String difficulty = res.getString("difficulty");
+                QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
+                question = new DBQuestion(id, text, Difficulty.valueOf(difficulty), type);
+            }
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! Answer with an id of " + ID + " was not found!");
+        }
+        return question;
     }
 
     @Override
@@ -111,7 +131,44 @@ public class DBWrapper implements Wrapper{
         return questions;
     }
 
-    public void closeConnection() {
+    @Override
+    public List<Answer> getAllAnswers() {
+        return null;
+    }
+
+
+    @Override
+    public boolean addAnswerToQuestion(int QID, int AID, boolean isCorrect) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteAnswerFromQuestion(int QID, int AID) {
+        return false;
+    }
+
+    @Override
+    public List<Answer> getAnswersFromQuestion(int QID) {
+        return null;
+    }
+
+    @Override
+    public boolean addSubjectToTeacher(int ID, Subject subject) {
+        return false;
+    }
+
+    @Override
+    public boolean addTeacher(Teacher teacher) {
+        return false;
+    }
+
+    @Override
+    public boolean deleteTeacherByID(int ID) {
+        return false;
+    }
+
+    @Override
+    public void close() {
         try {
             if(conn != null) {
                 conn.close();
