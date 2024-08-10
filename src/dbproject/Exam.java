@@ -9,6 +9,7 @@ import java.util.Arrays;
 
 public abstract class Exam implements Examable {
 	private String date;
+	protected Repo repo;
 	protected int currNumQue;
 	protected Question[] questions;
 	private boolean displaySolution;
@@ -19,7 +20,7 @@ public abstract class Exam implements Examable {
 	 * @param maxNumQue max number of question in test
 	 * @throws NumOfQuestionsException
 	 */
-	public Exam(int maxNumQue) throws NumOfQuestionsException {
+	public Exam(Repo repo, int maxNumQue) throws NumOfQuestionsException {
 		if (maxNumQue > 10)
 			throw new NumOfQuestionsException(maxNumQue);
 
@@ -28,6 +29,7 @@ public abstract class Exam implements Examable {
 		displaySolution = false;
 		currNumQue = 0;
 		this.date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm"));
+		this.repo = repo;
 	}
 
 	/**
@@ -109,6 +111,6 @@ public abstract class Exam implements Examable {
 	}
 
 	@Override
-	public abstract void createExam(Repo repo);
+	public abstract void createExam();
 
 }

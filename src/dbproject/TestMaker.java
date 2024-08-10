@@ -126,17 +126,17 @@ public class TestMaker {
 		Exam exam = null;
 		try {
 			if (isAuto) {
-				exam = new AutomaticExam(numQue);
+				exam = new AutomaticExam(repo, numQue);
 				System.out.println("is auto");
 			} else {
-				exam = new MenualExam(numQue, input);
+				exam = new MenualExam(repo, numQue, input);
 			}
 
 		} catch (NumOfQuestionsException e) {
 			System.out.println("Error! " + e.getMessage());
 		}
 
-		exam.createExam(repo);
+		exam.createExam();
 
 		exam.writeExam(true); // write solution
 		String examPath = exam.writeExam(false); // write exam
