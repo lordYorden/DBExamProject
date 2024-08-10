@@ -22,6 +22,11 @@ public class Question implements Serializable{
 		this.difficulty = difficulty;
 		this.displaySolution = false;
 	}
+
+	public Question(int id, String text, Difficulty difficulty) {
+		this(text, difficulty);
+		this.id = id;
+	}
 	
 	public static void setNumQuestions(int numQuestions) {
 		Question.numQuestions = numQuestions;

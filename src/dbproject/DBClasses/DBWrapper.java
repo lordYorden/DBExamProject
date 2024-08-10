@@ -2,8 +2,11 @@ package dbproject.DBClasses;
 
 import dbproject.Question;
 import dbproject.Subject;
+import dbproject.Question.Difficulty;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DBWrapper implements Wrapper{
     private Subject subject;
@@ -83,7 +86,31 @@ public class DBWrapper implements Wrapper{
     public boolean deleteAnswerBylD(int ID) {
         return false;
     }
-    
+
+    @Override
+    public List<Question> getAllQuestionsFromSubject(Subject subject) {
+        List<Question> questions = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question where sid = ?) as question natural join difficulty) natural join type");
+            stmt.setInt(1, subject.getID());
+            ResultSet res = stmt.executeQuery();
+
+            while (res.next()) {
+                int id = res.getInt("qid");
+                String text = res.getString("text");
+                String difficulty = res.getString("difficulty");
+                QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
+                questions.add(new DBQuestion(id, text, Difficulty.valueOf(difficulty), type));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! No Question of subject " + subject.getSubject() + " was not found!");
+        }
+        return questions;
+    }
+
     public void closeConnection() {
         try {
             if(conn != null) {
