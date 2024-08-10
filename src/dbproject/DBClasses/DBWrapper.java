@@ -5,6 +5,7 @@ import dbproject.Question;
 import dbproject.Subject;
 import dbproject.Question.Difficulty;
 
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,19 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public boolean addAnswer(String answer) {
-        return false;
+    public boolean addAnswer(String answer, QuestionType type) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into answer (text, typeid) values (?, ?)");
+            stmt.setString(1, answer);
+            stmt.setInt(2, type.getID());
+            ResultSet res = stmt.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! failed to add answer!");
+        }
+        return true;
     }
 
     @Override
@@ -87,7 +99,6 @@ public class DBWrapper implements Wrapper{
         return 0;
     }
 
-    @Override
     public Subject getSubject() {
         return subject;
     }
@@ -132,7 +143,7 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public List<Answer> getAllAnswers() {
+    public List<String> getAllAnswers() {
         return null;
     }
 
