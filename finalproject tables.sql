@@ -28,7 +28,6 @@ Create Table Answer(
 	AID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	TypeID int,
 	text text,
-	isCorrect boolean,
 	CONSTRAINT fk_typeId FOREIGN KEY (TypeID) REFERENCES Type (TypeID)
 );
 
@@ -61,6 +60,15 @@ Create Table Question_Exam(
 	PRIMARY key (qid, eid),
 	CONSTRAINT fk_qid FOREIGN KEY (QID) REFERENCES Question (QID),
 	CONSTRAINT fk_eid FOREIGN KEY (EID) REFERENCES Exam (EID)
+);
+
+Create Table Question_Answer(
+	QID int,
+	AID int,
+	isCorrect boolean,
+	PRIMARY key(QID,AID),
+	CONSTRAINT fk_qid FOREIGN KEY (QID) REFERENCES Question (QID),
+	CONSTRAINT fk_aid FOREIGN KEY (AID) REFERENCES Answer (AID)
 );
 
 
