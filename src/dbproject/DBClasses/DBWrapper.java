@@ -105,7 +105,26 @@ public class DBWrapper implements Wrapper{
 
     @Override
     public boolean addQuestion(Question question) {
-        return false;
+        DBQuestion toAdd = (DBQuestion) question;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into question (text, sid, typeID) values (?, ?, ?)");
+            stmt.setString(1, toAdd.getText());
+            stmt.setInt(2, subject.getID());
+            stmt.setInt(4, toAdd.getType().getID());
+            ResultSet res = stmt.executeQuery();
+
+            stmt = conn.prepareStatement("insert into difficulty (qid, difficulty) values (?, ?)");
+            stmt.setInt(1, getNumQuestions());
+            stmt.setString(2, toAdd.getDifficulty().name());
+            res = stmt.executeQuery();
+
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! failed to add question!");
+        }
+        return true;
     }
 
     @Override
@@ -175,6 +194,16 @@ public class DBWrapper implements Wrapper{
 
     @Override
     public boolean deleteTeacherByID(int ID) {
+        return false;
+    }
+
+    @Override
+    public boolean createExam(String creationDate) {
+        return false;
+    }
+
+    @Override
+    public boolean addQuestionToExam(int QID, int EID) {
         return false;
     }
 
