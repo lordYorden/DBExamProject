@@ -388,7 +388,7 @@ public class DBWrapper implements Wrapper{
                 String firstName = res.getString("firstname");
                 String lastName = res.getString("lastname");
                 Teacher teacher = new Teacher(tid, firstName, lastName);
-                teacher.addSubjects(getSubjectsFromTeacher(tid));
+                //teacher.addSubjects(getSubjectsFromTeacher(tid));
                 teachers.add(teacher);
             }
 
@@ -409,7 +409,7 @@ public class DBWrapper implements Wrapper{
     public List<Subject> getSubjectsFromTeacher(int tid) {
         List<Subject> subjects = new ArrayList<>();
         try {
-            PreparedStatement stmt = conn.prepareStatement("select sid from teacher_subject where tid = ?");
+            PreparedStatement stmt = conn.prepareStatement("select sid from teacher_subject where tid = ? order by sid");
             stmt.setInt(1, tid);
             ResultSet res = stmt.executeQuery();
             while (res.next()) {

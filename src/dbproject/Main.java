@@ -54,11 +54,14 @@ public class Main {
     public static Subject selectASubjectFromTeacher(Teacher teacher, Scanner input) {
         Subject subject = null;
         boolean wantToTeach = false;
+        List<Subject> subjects = null;
         do {
             try {
-                if (teacher.getSubjects() != null && !teacher.getSubjects().isEmpty()) {
+                subjects = db.getSubjectsFromTeacher(teacher.getID());
+
+                if (subjects != null && !subjects.isEmpty()) {
                     System.out.println("You are currently teaching the following subjects:");
-                    for (Subject s : teacher.getSubjects()) {
+                    for (Subject s : subjects) {
                         System.out.format("%d. %s\n", s.getID(), s);
                     }
 
@@ -72,11 +75,10 @@ public class Main {
                 if(wantToTeach) {
                     subject = Subject.getSubjectFromUser(Subject.values(), input);
                     db.addSubjectToTeacher(teacher.getID(), subject);
-                    teacher.addSubject(subject);
                 }else{
-                    subject = Subject.getSubjectFromUser(teacher.getSubjects().toArray(new Subject[0]), input);
+                    subject = Subject.getSubjectFromUser(subjects.toArray(new Subject[0]), input);
                 }
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 System.err.println("Error! " + e.getMessage());
                 subject = null;
             }
@@ -103,10 +105,10 @@ public class Main {
             teacher.setID(tid);
         }
 
-        Subject subject = selectASubjectFromTeacher(teacher, input);
-
-        db.setSelectedSubject(subject);
         db.setTeacher(teacher);
+        Subject subject = selectASubjectFromTeacher(teacher, input);
+        db.setSelectedSubject(subject);
+
         final int EXIT = -1;
         int selction = 0;
 
@@ -169,6 +171,11 @@ public class Main {
                     }
                     case 7: {
                         generateExam(input);
+                        break;
+                    }
+                    case 8: {
+                        subject = selectASubjectFromTeacher(teacher, input);
+                        db.setSelectedSubject(subject);
                         break;
                     }
                     case EXIT: {

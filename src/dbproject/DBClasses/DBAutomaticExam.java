@@ -28,9 +28,9 @@ public class DBAutomaticExam extends DBExam {
             //System.out.println("The question was successfully added!");
         }
     }
-
+/*
     private void addQuestionToList(DBQuestion question, int examID) {
         db.addQuestionToExam(question.getId(), examID);
         currNumQue++;
-    }
+    }*/
 }

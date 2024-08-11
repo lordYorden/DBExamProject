@@ -33,9 +33,11 @@ public abstract class DBExam implements Examable {
         sb.append("Exam created on: ").append(creationDate).append("\n\n");
 
         List<Question> questions = db.getQuestionsFromExam(eid);
-        for (Question q : questions) {
+        for (Question value : questions) {
+            DBQuestion q = (DBQuestion) value;
             sb.append(q.getText()).append("\n");
             sb.append("Difficulty: ").append(q.getDifficulty()).append("\n");
+            sb.append("Type: ").append(q.getType().getType()).append("\n");
             List<Answer> answers = null;
             int i = 0;
             try {
@@ -77,6 +79,17 @@ public abstract class DBExam implements Examable {
 
     public boolean getShowSolution() {
         return showSolution;
+    }
+
+    protected void addQuestionToList(DBQuestion question,int eid) {
+            if(question.getType() == QuestionType.MultipleChoice || question.getType() == QuestionType.SingleSelection){
+            List<Answer> answers = db.getAnswersFromQuestion(question);
+            if (answers != null && answers.size() < 4){
+                throw new IllegalArgumentException("Question must have at least 4 answers!");
+            }
+        }
+        db.addQuestionToExam(question.getId(),eid);
+        currNumQue++;
     }
 
     @Override
