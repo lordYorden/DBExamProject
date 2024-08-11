@@ -25,7 +25,7 @@ public class DBWrapper implements Wrapper{
 
     public DBWrapper() {
         try {
-            this.conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
+            this.conn = DriverManager.getConnection(dbUrl, "postgres", "Backspace");
         }catch(SQLException ex) {
             System.err.println("SQLException: " + ex.getMessage());
             System.err.println("SQLState: " + ex.getSQLState());
@@ -105,12 +105,38 @@ public class DBWrapper implements Wrapper{
 
     @Override
     public int getNumQuestions() {
-        return 0;
+        int numOfQuestions = 0;
+        try {
+           Statement stm = conn.createStatement();
+           ResultSet res = stm.executeQuery("select COUNT(*) AS num_of_questions from question");
+           if(res.next()) {
+               numOfQuestions = res.getInt("num_of_questions");
+           }
+        }catch (SQLException e) {
+           System.err.println("SQLException: " + e.getMessage());
+           System.err.println("SQLState: " + e.getSQLState());
+           System.err.println("VendorError: " + e.getErrorCode());
+           throw new RuntimeException("Error! no questions were found!");
+        }
+        return numOfQuestions;
     }
 
     @Override
     public int getNumAnswers() {
-        return 0;
+        int numOfAnswers = 0;
+        try {
+            Statement stm = conn.createStatement();
+            ResultSet res = stm.executeQuery("select COUNT(*) AS num_of_answers from answer");
+            if(res.next()) {
+                numOfAnswers = res.getInt("num_of_answers");
+            }
+        }catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! no answers were found!");
+        }
+        return numOfAnswers;
     }
 
     @Override
@@ -326,6 +352,10 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
+    public List<Answer> getAnswersFromQuestion(int QID) {
+        return null;
+    }
+  
     public Teacher getTeacherByID(int ID) {
         return null;
     }
@@ -334,12 +364,22 @@ public class DBWrapper implements Wrapper{
     public List<Subject> getSubjectsFromTeacher(int tid) {
         return null;
     }
-    @Override
-    public boolean deleteTeacherByID(int ID) {
-        return false;
-    }
 
     @Override
+    public boolean deleteTeacherByID(int ID) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("DELETE from teacher where tid = ?");
+            stmt.setInt(1, ID);
+            ResultSet res = stmt.executeQuery();
+        }catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! failed to remove a teacher!");
+        }
+        return true;
+    }
+  
     public int addExam(String creationDate) {
         return -1;
     }//TODO
