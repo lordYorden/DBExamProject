@@ -5,8 +5,6 @@ import dbproject.Exam;
 import dbproject.Question;
 import dbproject.Subject;
 import dbproject.Question.Difficulty;
-
-import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,7 @@ public class DBWrapper implements Wrapper{
 
     public DBWrapper() {
         try {
-            this.conn = DriverManager.getConnection(dbUrl, "postgres", "Backspace");
+            this.conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
         }catch(SQLException ex) {
             System.err.println("SQLException: " + ex.getMessage());
             System.err.println("SQLState: " + ex.getSQLState());
@@ -178,7 +176,7 @@ public class DBWrapper implements Wrapper{
         try {
             PreparedStatement stmt = conn.prepareStatement("delete from question where qid = ?");
             stmt.setInt(1, ID);
-            ResultSet res = stmt.executeQuery();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
@@ -193,7 +191,7 @@ public class DBWrapper implements Wrapper{
         try {
             PreparedStatement stmt = conn.prepareStatement("delete from answer where aid = ?");
             stmt.setInt(1, ID);
-            ResultSet res = stmt.executeQuery();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
@@ -255,7 +253,7 @@ public class DBWrapper implements Wrapper{
             stmt.setInt(1, qid);
             stmt.setInt(2, aid);
             stmt.setBoolean(3, isCorrect);
-            ResultSet res = stmt.executeQuery();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
@@ -271,7 +269,7 @@ public class DBWrapper implements Wrapper{
             PreparedStatement stmt = conn.prepareStatement("delete from question_answer where qid = ? and aid = ?");
             stmt.setInt(1, qid);
             stmt.setInt(2, aid);
-            ResultSet res = stmt.executeQuery();
+            stmt.executeUpdate();
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
@@ -292,7 +290,7 @@ public class DBWrapper implements Wrapper{
             PreparedStatement stmt = conn.prepareStatement("insert into teacher_subject (tid, sid) values (?, ?)");
             stmt.setInt(1, tid);
             stmt.setInt(2, subject.getID());
-            ResultSet res = stmt.executeQuery();
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
@@ -365,7 +363,7 @@ public class DBWrapper implements Wrapper{
         try {
             PreparedStatement stmt = conn.prepareStatement("DELETE from teacher where tid = ?");
             stmt.setInt(1, ID);
-            ResultSet res = stmt.executeQuery();
+            stmt.executeUpdate();
         }catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
