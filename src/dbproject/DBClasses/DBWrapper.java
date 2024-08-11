@@ -1,6 +1,7 @@
 package dbproject.DBClasses;
 
 import dbproject.Answer;
+import dbproject.Exam;
 import dbproject.Question;
 import dbproject.Subject;
 import dbproject.Question.Difficulty;
@@ -45,7 +46,7 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Error! failed to add answer!");
+            throw new RuntimeException("Failed to add answer!");
         }
         return aid;
     }
@@ -69,7 +70,7 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Error! Answer with an id of " + ID + " was not found!");
+            throw new RuntimeException("Answer with an id of " + ID + " was not found!");
         }
         return question;
     }
@@ -88,7 +89,7 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Error! Answer with an id of " + ID + " was not found!");
+            throw new RuntimeException("Answer with an id of " + ID + " was not found!");
         }
         return answer;
     }
@@ -131,20 +132,40 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Error! failed to add question!");
+            throw new RuntimeException("Failed to add question!");
         }
         return qid;
     }
 
     @Override
     public boolean deleteQuestionBylD(int ID) {
-        return false;
-    }//TODO
+        try {
+            PreparedStatement stmt = conn.prepareStatement("delete from question where qid = ?");
+            stmt.setInt(1, ID);
+            ResultSet res = stmt.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to remove question!");
+        }
+        return true;
+    }
 
     @Override
     public boolean deleteAnswerBylD(int ID) {
-        return false;
-    }//TODO
+        try {
+            PreparedStatement stmt = conn.prepareStatement("delete from answer where aid = ?");
+            stmt.setInt(1, ID);
+            ResultSet res = stmt.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to add answer!");
+        }
+        return true;
+    }
 
     @Override
     public List<Question> getAllQuestionsFromSubject(Subject subject) {
@@ -165,46 +186,146 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Error! No Question of subject " + subject.getSubject() + " was not found!");
+            throw new RuntimeException("No Question of subject " + subject.getSubject() + " were found!");
         }
         return questions;
     }
 
     @Override
-    public List<String> getAllAnswers() {
+    public List<Answer> getAllAnswers() {
+        List<Answer> answers = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select aid,text,typeID from answer");
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                int id = res.getInt("aid");
+                String text = res.getString("text");
+                QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
+                answers.add(new DBAnswer(id, text, type));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("No Answers were found!");
+        }
+        return answers;
+    }
+
+    @Override
+    public boolean addAnswerToQuestion(int qid, int aid, boolean isCorrect) { //todo
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into question_answer (qid, aid, iscorrect) values (?, ? ,?)");
+            stmt.setInt(1, qid);
+            stmt.setInt(2, aid);
+            stmt.setBoolean(3, isCorrect);
+            ResultSet res = stmt.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to add answer to question!");
+        }
+        return true;
+    }
+
+    @Override
+    public boolean deleteAnswerFromQuestion(int qid, int aid) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("delete from question_answer where qid = ? and aid = ?");
+            stmt.setInt(1, qid);
+            stmt.setInt(2, aid);
+            ResultSet res = stmt.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to remove answer from question!");
+        }
+        return true;
+    }
+
+    @Override
+    public List<Answer> getAnswersFromQuestion(int qid) {
         return null;
     }
 
-
     @Override
-    public boolean addAnswerToQuestion(int QID, int AID, boolean isCorrect) {
-        return false;
-    }//TODO
+    public void addSubjectToTeacher(int tid, Subject subject) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into teacher_subject (tid, sid) values (?, ?)");
+            stmt.setInt(1, tid);
+            stmt.setInt(2, subject.getID());
+            ResultSet res = stmt.executeQuery();
 
-    @Override
-    public boolean deleteAnswerFromQuestion(int QID, int AID) {
-        return false;
-    }//TODO
-
-    @Override
-    public List<Answer> getAnswersFromQuestion(int QID) {
-        return null;
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to subject to teacher!");
+        }
     }
-
-    @Override
-    public boolean addSubjectToTeacher(int ID, Subject subject) {
-        return false;
-    }//TODO
 
     @Override
     public int addTeacher(Teacher teacher) {
-        return -1;
-    }//TODO
+        int tid = -1;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into teacher (firstname, lastname) values (?, ?) returning tid");
+            stmt.setString(1, teacher.getFirstName());
+            stmt.setString(2, teacher.getLastName());
+            ResultSet res = stmt.executeQuery();
+            if (res.next()) {
+                tid = res.getInt("tid");
+            }
+
+            for(Subject subject : teacher.getSubjects()) {
+                addSubjectToTeacher(tid, subject);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to add answer to question!");
+        }
+        return tid;
+    }
+
+    @Override
+    public List<Teacher> getAllTeachers() {
+        List<Teacher> teachers = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select tid,firstname,lastname from teacher");
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                int id = res.getInt("tid");
+                String firstName = res.getString("firstname");
+                String lastName = res.getString("lastname");
+                teachers.add(new Teacher(firstName, lastName));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("No Teachers were found!");
+        }
+        return teachers;
+    }
+
+    @Override
+    public Teacher getTeacherByID(int ID) {
+        return null;
+    }
+
+    @Override
+    public List<Subject> getSubjectsFromTeacher(int tid) {
+        return null;
+    }
 
     @Override
     public boolean deleteTeacherByID(int ID) {
         return false;
-    }//TODO
+    }
 
     @Override
     public int addExam(String creationDate) {
@@ -212,9 +333,14 @@ public class DBWrapper implements Wrapper{
     }//TODO
 
     @Override
-    public boolean addQuestionToExam(int QID, int EID) {
+    public boolean addQuestionToExam(int qid, int eid) {
         return false;
     }//TODO
+
+    @Override
+    public Exam getExamByID(int eid) {
+        return null;
+    }
 
     @Override
     public void close() {

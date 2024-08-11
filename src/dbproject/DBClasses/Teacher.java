@@ -1,6 +1,7 @@
 package dbproject.DBClasses;
 
 import dbproject.Exam;
+import dbproject.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public class Teacher {
    private  String firstName;
    private String lastName;
-   private List<String> subjects;
+   private List<Subject> subjects;
    private List<Exam> exams;
 
 
@@ -35,7 +36,11 @@ public class Teacher {
         return firstName;
     }
 
-    public void addSubject(String subject) {
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
+
+    public void addSubject(Subject subject) {
         subjects.add(subject);
     }
 
