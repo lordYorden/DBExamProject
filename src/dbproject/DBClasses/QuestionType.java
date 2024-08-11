@@ -1,5 +1,7 @@
 package dbproject.DBClasses;
 
+import java.util.Scanner;
+
 public enum QuestionType {
     OpenEnded(1, "Open Ended"),
     SingleSelection(2, "Single Selection"),
@@ -35,6 +37,20 @@ public enum QuestionType {
     }
 
     public String getType() {
+        return type;
+    }
+    public static QuestionType getQuestionTypeFromUser(Scanner input) {
+        QuestionType type = null;
+        int selection = 0;
+        do {
+            System.out.println("Select a question type:");
+            for (QuestionType t : QuestionType.values()) {
+                System.out.println(t.getID() + ". " + t.getType());
+            }
+            selection = input.nextInt();
+            input.nextLine();
+            type = QuestionType.toQuestionType(selection);
+        } while (type == null);
         return type;
     }
 }

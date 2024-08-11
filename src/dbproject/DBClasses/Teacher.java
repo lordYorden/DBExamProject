@@ -12,12 +12,19 @@ public class Teacher {
    private List<Subject> subjects;
    private List<Exam> exams;
 
+   private int ID;
+
 
     public Teacher(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.subjects = new ArrayList<>();
         this.exams = new ArrayList<>();
+    }
+
+    public Teacher(int tid, String firstName, String lastName) {
+        this(firstName, lastName);
+        this.ID = tid;
     }
 
     public String getLastName() {
@@ -42,6 +49,17 @@ public class Teacher {
 
     public void addSubject(Subject subject) {
         subjects.add(subject);
+    }
+    public void addSubjects(List<Subject> subjects) {
+        this.subjects.addAll(subjects);
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     /*public boolean createExam(String subject, String examName) {

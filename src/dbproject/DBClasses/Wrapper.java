@@ -31,5 +31,7 @@ public interface Wrapper {
     public boolean addQuestionToExam(int qid, int eid);
     public Exam getExamByID(int eid);
     public void close();
+    public Subject getSubject();
+    public void setSubject(Subject subject);
 
 }

@@ -16,7 +16,7 @@ public class TestMaker {
 	public static void main(String[] args) throws IOException {
 		Scanner input = new Scanner(System.in);
 
-		Subject subject = getSubjectFromUser(input);
+		Subject subject = Subject.getSubjectFromUser(Subject.values(), input);
 		Repo repo = null;// new dbproject.Repo(subject);
 		final int EXIT = -1;
 		int selction = 0;
@@ -576,7 +576,7 @@ public class TestMaker {
 	 * @param input where to read the subject from
 	 * @return subject from the user
 	 */
-	private static Subject getSubjectFromUser(Scanner input) { // sad i am not allowed to use generics
+	/*private static Subject getSubjectFromUser(Scanner input) { // sad i am not allowed to use generics
 		Subject[] subjects = Subject.values();
 		int subject = 0;
 		boolean isValid = false;
@@ -597,6 +597,6 @@ public class TestMaker {
 		} while (!isValid);
 
 		return subjects[subject];
-	}
+	}*/
 
 }

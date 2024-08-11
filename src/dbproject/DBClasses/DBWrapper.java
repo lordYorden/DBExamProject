@@ -19,7 +19,11 @@ public class DBWrapper implements Wrapper{
     final String dbUrl = "jdbc:postgresql:finalproject";
 
     public DBWrapper(Subject subject) {
+        this();
         this.subject = subject;
+    }
+
+    public DBWrapper() {
         try {
             this.conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
         }catch(SQLException ex) {
@@ -27,8 +31,13 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLState: " + ex.getSQLState());
             System.err.println("VendorError: " + ex.getErrorCode());
         }catch(Exception e){
-            System.err.println(e.getMessage());
+            throw new RuntimeException("Failed to connect to the database!");
         }
+    }
+
+    @Override
+    public void setSubject(Subject subject) {
+        this.subject = subject;
     }
 
     @Override
@@ -104,6 +113,7 @@ public class DBWrapper implements Wrapper{
         return 0;
     }
 
+    @Override
     public Subject getSubject() {
         return subject;
     }
@@ -262,7 +272,7 @@ public class DBWrapper implements Wrapper{
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Failed to subject to teacher!");
+            throw new IllegalStateException("Failed to add subject to teacher!");
         }
     }
 
@@ -298,11 +308,14 @@ public class DBWrapper implements Wrapper{
             PreparedStatement stmt = conn.prepareStatement("select tid,firstname,lastname from teacher");
             ResultSet res = stmt.executeQuery();
             while (res.next()) {
-                int id = res.getInt("tid");
+                int tid = res.getInt("tid");
                 String firstName = res.getString("firstname");
                 String lastName = res.getString("lastname");
-                teachers.add(new Teacher(firstName, lastName));
+                Teacher teacher = new Teacher(tid, firstName, lastName);
+                teacher.addSubjects(getSubjectsFromTeacher(tid));
+                teachers.add(new Teacher(tid, firstName, lastName));
             }
+
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
@@ -321,7 +334,6 @@ public class DBWrapper implements Wrapper{
     public List<Subject> getSubjectsFromTeacher(int tid) {
         return null;
     }
-
     @Override
     public boolean deleteTeacherByID(int ID) {
         return false;
