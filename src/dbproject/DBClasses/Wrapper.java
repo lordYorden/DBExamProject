@@ -1,28 +1,37 @@
 package dbproject.DBClasses;
 
 import dbproject.Answer;
+import dbproject.Exam;
 import dbproject.Question;
 import dbproject.Subject;
 
 import java.util.List;
 
 public interface Wrapper {
-    public boolean addAnswer(String answer, QuestionType type);
-    public Question getQuestionBylD(int ID);
+    public int addAnswer(String answer, QuestionType type);
     public String getAnswerBylD(int ID);
-    public int getNumQuestions();
-    public int getNumAnswers();
-    public boolean addQuestion(Question question);
-    public boolean deleteQuestionBylD(int ID);
     public boolean deleteAnswerBylD(int ID);
+    public List<Answer> getAllAnswers();
+    public int getNumAnswers();
+    public Question getQuestionBylD(int ID);
+    public int getNumQuestions();
+    public int addQuestion(Question question);
+    public boolean deleteQuestionBylD(int ID);
     public List<Question> getAllQuestionsFromSubject(Subject subject);
-    public List<String> getAllAnswers();
-    public boolean addAnswerToQuestion(int QID, int AID, boolean isCorrect);
-    public boolean deleteAnswerFromQuestion(int QID, int AID);
-    public List<Answer> getAnswersFromQuestion(int QID);
-    public boolean addSubjectToTeacher(int ID, Subject subject);
-    public boolean addTeacher(Teacher teacher);
+    public boolean addAnswerToQuestion(int qid, int aid, boolean isCorrect);
+    public boolean deleteAnswerFromQuestion(int qid, int aid);
+    public List<Answer> getAnswersFromQuestion(int qid);
+    public void addSubjectToTeacher(int tid, Subject subject);
+    public int addTeacher(Teacher teacher);
+    public List<Teacher> getAllTeachers();
+    public Teacher getTeacherByID(int ID);
+    public List<Subject> getSubjectsFromTeacher(int tid);
     public boolean deleteTeacherByID(int ID);
+    public int addExam(String creationDate);
+    public boolean addQuestionToExam(int qid, int eid);
+    public Exam getExamByID(int eid);
     public void close();
+    public Subject getSubject();
+    public void setSubject(Subject subject);
 
 }

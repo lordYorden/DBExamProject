@@ -1,5 +1,7 @@
 package dbproject;
 
+import java.util.Scanner;
+
 public enum Subject {
     Math(1, "Math"),
     Science(2, "Science"),
@@ -40,5 +42,20 @@ public enum Subject {
             case "Geography" -> Geography;
             default -> null;
         };
+    }
+
+    public static Subject getSubjectFromUser(Subject[] subjects, Scanner input) {
+        Subject subject = null;
+        int selection = 0;
+        do {
+            System.out.println("Select a subject:");
+            for (Subject s : Subject.values()) {
+                System.out.println(s.getID() + ". " + s.getSubject());
+            }
+            selection = input.nextInt();
+            input.nextLine();
+            subject = Subject.toSubject(selection);
+        } while (subject == null);
+        return subject;
     }
 }
