@@ -3,10 +3,13 @@ package dbproject.DBClasses;
 import dbproject.Exam;
 import dbproject.Examable;
 import dbproject.Repo;
+import dbproject.Subject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public abstract class DBExam implements Examable {
@@ -15,12 +18,13 @@ public abstract class DBExam implements Examable {
     protected DBWrapper db;
     protected int maxNumQue;
     protected int currNumQue;
-    private String creationDate;
+    protected String creationDate;
 
     public DBExam(int maxNumQue, DBWrapper db) {
         this.maxNumQue = maxNumQue;
         this.currNumQue = 0;
         this.db = db;
+        this.creationDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy_MM_dd"));
     }
 
     public String writeExam(boolean displaySolution) throws FileNotFoundException {
