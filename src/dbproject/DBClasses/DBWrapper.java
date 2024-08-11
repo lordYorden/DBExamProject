@@ -31,19 +31,23 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public boolean addAnswer(String answer, QuestionType type) {
+    public int addAnswer(String answer, QuestionType type) {
+        int aid = -1;
         try {
-            PreparedStatement stmt = conn.prepareStatement("insert into answer (text, typeid) values (?, ?)");
+            PreparedStatement stmt = conn.prepareStatement("insert into answer (text, typeid) values (?, ?) returning aid");
             stmt.setString(1, answer);
             stmt.setInt(2, type.getID());
             ResultSet res = stmt.executeQuery();
+            if(res.next()) {
+                aid = res.getInt("aid");
+            }
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
             throw new RuntimeException("Error! failed to add answer!");
         }
-        return true;
+        return aid;
     }
 
     @Override
@@ -104,19 +108,43 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public boolean addQuestion(Question question) {
-        return false;
+    public int addQuestion(Question question) {
+        DBQuestion toAdd = (DBQuestion) question;
+        int qid = -1;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into question (text, sid, typeID) values (?, ?, ?) returning qid");
+            stmt.setString(1, toAdd.getText());
+            stmt.setInt(2, subject.getID());
+            stmt.setInt(4, toAdd.getType().getID());
+            ResultSet res = stmt.executeQuery();
+
+            if(res.next()) {
+                qid = res.getInt("qid");
+            }
+
+            stmt = conn.prepareStatement("insert into difficulty (qid, difficulty) values (?, ?)");
+            stmt.setInt(1, getNumQuestions());
+            stmt.setString(2, toAdd.getDifficulty().name());
+            res = stmt.executeQuery();
+
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Error! failed to add question!");
+        }
+        return qid;
     }
 
     @Override
     public boolean deleteQuestionBylD(int ID) {
         return false;
-    }
+    }//TODO
 
     @Override
     public boolean deleteAnswerBylD(int ID) {
         return false;
-    }
+    }//TODO
 
     @Override
     public List<Question> getAllQuestionsFromSubject(Subject subject) {
@@ -151,12 +179,12 @@ public class DBWrapper implements Wrapper{
     @Override
     public boolean addAnswerToQuestion(int QID, int AID, boolean isCorrect) {
         return false;
-    }
+    }//TODO
 
     @Override
     public boolean deleteAnswerFromQuestion(int QID, int AID) {
         return false;
-    }
+    }//TODO
 
     @Override
     public List<Answer> getAnswersFromQuestion(int QID) {
@@ -166,17 +194,27 @@ public class DBWrapper implements Wrapper{
     @Override
     public boolean addSubjectToTeacher(int ID, Subject subject) {
         return false;
-    }
+    }//TODO
 
     @Override
-    public boolean addTeacher(Teacher teacher) {
-        return false;
-    }
+    public int addTeacher(Teacher teacher) {
+        return -1;
+    }//TODO
 
     @Override
     public boolean deleteTeacherByID(int ID) {
         return false;
-    }
+    }//TODO
+
+    @Override
+    public int addExam(String creationDate) {
+        return -1;
+    }//TODO
+
+    @Override
+    public boolean addQuestionToExam(int QID, int EID) {
+        return false;
+    }//TODO
 
     @Override
     public void close() {

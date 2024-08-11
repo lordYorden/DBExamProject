@@ -8,10 +8,10 @@ import java.util.List;
 
 public class DBQuestion extends Question {
 
-    int numAnswers;
-    int numCorrectAnswers;
-    QuestionType type;
-    List<Integer> answerIDs;
+    private int numAnswers;
+    private int numCorrectAnswers;
+    private QuestionType type;
+    private List<Integer> answerIDs;
 
 
     public DBQuestion(int ID, String question, Difficulty difficulty, QuestionType type) {
@@ -27,5 +27,29 @@ public class DBQuestion extends Question {
         sb.append(type.getType());
         sb.append("\n");
         return sb.toString();
+    }
+
+    public int getNumAnswers() {
+        return numAnswers;
+    }
+
+    public void setNumAnswers(int numAnswers) {
+        this.numAnswers = numAnswers;
+    }
+
+    public int getNumCorrectAnswers() {
+        return numCorrectAnswers;
+    }
+
+    public void setNumCorrectAnswers(int numCorrectAnswers) {
+        this.numCorrectAnswers = numCorrectAnswers;
+    }
+
+    public QuestionType getType() {
+        return type;
+    }
+
+    public void setType(QuestionType type) {
+        this.type = type;
     }
 }

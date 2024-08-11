@@ -86,4 +86,8 @@ public class Question implements Serializable{
 		
 		return que.id == this.id && que.text == this.text && this.difficulty == que.difficulty;
 	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
 }
