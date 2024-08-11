@@ -5,6 +5,7 @@ import dbproject.Answer;
 public class DBAnswer extends Answer {
     private QuestionType type;
     private int ID;
+    private boolean showType = false;
 
     public DBAnswer(int id, String answer, boolean isCorrect, QuestionType type) {
         super(answer, isCorrect);
@@ -21,10 +22,24 @@ public class DBAnswer extends Answer {
     public String toString() {
         StringBuffer sb = new StringBuffer();
         sb.append(super.toString());
-        sb.append("Type: ");
-        sb.append(type.getType());
+        sb.append("ID: ");
+        sb.append(ID);
         sb.append("\n");
+        
+        if (showType) {
+            sb.append("Type: ");
+            sb.append(type.getType());
+            sb.append("\n");
+        }
         return sb.toString();
+    }
+
+    public boolean isShowType() {
+        return showType;
+    }
+
+    public void setShowType(boolean showType) {
+        this.showType = showType;
     }
 
     public int getID() {

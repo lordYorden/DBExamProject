@@ -22,7 +22,8 @@ public class Main {
         for (Question question : db.getAllQuestionsFromSubject(subject)) {
             System.out.print(question);
             try {
-                for (Answer answer : db.getAnswersFromQuestion(question.getId())) {
+                System.out.println("Answers:");
+                for (Answer answer : db.getAnswersFromQuestion(question)) {
                     System.out.println(answer);
                 }
             } catch (Exception e) {
@@ -83,7 +84,7 @@ public class Main {
                     case 2: {
                         System.out.println("Enter the answer:");
                         String answer = input.nextLine();
-                        System.out.println("Enter the type of the question:");
+                        Syste m.out.println("Enter the type of the question:");
                         QuestionType type = QuestionType.getQuestionTypeFromUser(input);
                         db.addAnswer(answer, type);
                         break;

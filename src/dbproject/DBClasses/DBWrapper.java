@@ -280,8 +280,23 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public List<Answer> getAnswersFromQuestion(int qid) {
-        return null;
+    public List<Answer> getAnswersFromQuestion(Question question) {
+        DBQuestion q = (DBQuestion) question;
+        List<Answer> answers = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select aid, text, iscorrect from (select * from question_answer where qid = ?) natural join answer");
+            stmt.setInt(1, question.getId());
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                int id = res.getInt("aid");
+                String text = res.getString("text");
+                boolean isCorrect = res.getBoolean("iscorrect");
+                answers.add(new DBAnswer(id, text, isCorrect, q.getType()));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("No Answers were found!");
+        }
+        return answers;
     }
 
     @Override

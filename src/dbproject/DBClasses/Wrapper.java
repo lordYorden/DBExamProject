@@ -20,7 +20,7 @@ public interface Wrapper {
     public List<Question> getAllQuestionsFromSubject(Subject subject);
     public boolean addAnswerToQuestion(int qid, int aid, boolean isCorrect);
     public boolean deleteAnswerFromQuestion(int qid, int aid);
-    public List<Answer> getAnswersFromQuestion(int qid);
+    public List<Answer> getAnswersFromQuestion(Question question);
     public void addSubjectToTeacher(int tid, Subject subject);
     public int addTeacher(Teacher teacher);
     public List<Teacher> getAllTeachers();
