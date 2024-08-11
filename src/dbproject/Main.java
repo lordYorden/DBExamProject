@@ -20,9 +20,13 @@ public class Main {
 
     public static void printAllQuestionsFromSubject(Subject subject) {
         for (Question question : db.getAllQuestionsFromSubject(subject)) {
-            System.out.println(question);
-            for (Answer answer : db.getAnswersFromQuestion(question.getId())) {
-                System.out.println(answer);
+            System.out.print(question);
+            try {
+                for (Answer answer : db.getAnswersFromQuestion(question.getId())) {
+                    System.out.println(answer);
+                }
+            } catch (Exception e) {
+                System.out.println("No answers were added yet!\n");
             }
         }
     }
