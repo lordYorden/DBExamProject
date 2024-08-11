@@ -350,11 +350,6 @@ public class DBWrapper implements Wrapper{
         }
         return teachers;
     }
-
-    @Override
-    public List<Answer> getAnswersFromQuestion(int QID) {
-        return null;
-    }
   
     public Teacher getTeacherByID(int ID) {
         return null;
