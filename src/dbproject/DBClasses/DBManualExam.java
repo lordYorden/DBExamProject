@@ -1,15 +1,14 @@
 package dbproject.DBClasses;
 
 import dbproject.*;
-import java.sql.*;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Scanner;
 
-public class DBMenualExam extends DBExam {
+public class DBManualExam extends DBExam {
     private final Scanner input;
 
-    public DBMenualExam(int maxNumQue, Scanner input, DBWrapper dbWrapper) throws NumOfQuestionsException {
+    public DBManualExam(int maxNumQue, Scanner input, DBWrapper dbWrapper) throws NumOfQuestionsException {
         super(maxNumQue, dbWrapper);
         this.input = input;
     }
@@ -42,8 +41,8 @@ public class DBMenualExam extends DBExam {
                         String choose = input.nextLine();
                         if(choose.equalsIgnoreCase("yes")) {
                             try {
-                                deleteAnswerFromAQuestion(question, input);
-                            } catch (NumOfAnswersException e) {
+                                deleteAnswerFromAQuestion(question);
+                            } catch (RuntimeException e) {
                                 System.out.println("Error! " + e.getMessage());
                             }
                         }
