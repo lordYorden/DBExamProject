@@ -1,24 +1,23 @@
 package dbproject.DBClasses;
 
-import dbproject.Answer;
-import dbproject.Exam;
-import dbproject.Question;
-import dbproject.Subject;
-import dbproject.Question.Difficulty;
+import dbproject.*;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DBWrapper implements Wrapper{
-    private Subject subject;
+    private Subject selectedSubject;
+    private Teacher teacher;
     //PostgreSQL connection
     Connection conn = null;
     //Class.forName("org.postgresql.Driver");
     final String dbUrl = "jdbc:postgresql:finalproject";
 
-    public DBWrapper(Subject subject) {
+    public DBWrapper(Subject subject, Teacher teacher) {
         this();
-        this.subject = subject;
+        this.selectedSubject = subject;
+        this.teacher = teacher;
     }
 
     public DBWrapper() {
@@ -34,8 +33,8 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public void setSubject(Subject subject) {
-        this.subject = subject;
+    public void setSelectedSubject(Subject selectedSubject) {
+        this.selectedSubject = selectedSubject;
     }
 
     @Override
@@ -62,7 +61,35 @@ public class DBWrapper implements Wrapper{
     public Question getQuestionBylD(int ID) {
         DBQuestion question = null;
         try {
-            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question where sid = ?) as question natural join difficulty) natural join type");
+            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question where qid = ?) as question natural join difficulty) natural join type");
+            stmt.setInt(1, ID);
+            ResultSet res = stmt.executeQuery();
+
+            if (res.next()) {
+                int id = res.getInt("qid");
+                String text = res.getString("text");
+                String difficulty = res.getString("difficulty");
+                QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
+                question = new DBQuestion(id, text, Difficulty.valueOf(difficulty), type);
+            }else{
+                throw new RuntimeException("Question with an id of " + ID + " was not found!");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Question with an id of " + ID + " was not found!");
+        }
+        return question;
+    }
+
+    @Override
+    public Question getRandomQuestionOfSubject(Subject subject) {
+        //select qid,text,difficulty,typeID from ((select * from question where sid = 2) as question natural join difficulty) natural join type order by random() limit 1
+        DBQuestion question = null;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question where sid = ?) as question natural join difficulty) natural join type order by random() limit 1");
             stmt.setInt(1, subject.getID());
             ResultSet res = stmt.executeQuery();
 
@@ -72,12 +99,15 @@ public class DBWrapper implements Wrapper{
                 String difficulty = res.getString("difficulty");
                 QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
                 question = new DBQuestion(id, text, Difficulty.valueOf(difficulty), type);
+            }else{
+                throw new RuntimeException("No Question of subject " + subject.getSubject() + " was found!");
             }
+
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
             System.err.println("SQLState: " + e.getSQLState());
             System.err.println("VendorError: " + e.getErrorCode());
-            throw new RuntimeException("Answer with an id of " + ID + " was not found!");
+            throw new RuntimeException("No Question of subject " + subject.getSubject() + " was found!");
         }
         return question;
     }
@@ -138,8 +168,8 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
-    public Subject getSubject() {
-        return subject;
+    public Subject getSelectedSubject() {
+        return selectedSubject;
     }
 
     @Override
@@ -149,8 +179,8 @@ public class DBWrapper implements Wrapper{
         try {
             PreparedStatement stmt = conn.prepareStatement("insert into question (text, sid, typeID) values (?, ?, ?) returning qid");
             stmt.setString(1, toAdd.getText());
-            stmt.setInt(2, subject.getID());
-            stmt.setInt(4, toAdd.getType().getID());
+            stmt.setInt(2, selectedSubject.getID());
+            stmt.setInt(3, toAdd.getType().getID());
             ResultSet res = stmt.executeQuery();
 
             if(res.next()) {
@@ -160,7 +190,7 @@ public class DBWrapper implements Wrapper{
             stmt = conn.prepareStatement("insert into difficulty (qid, difficulty) values (?, ?)");
             stmt.setInt(1, getNumQuestions());
             stmt.setString(2, toAdd.getDifficulty().name());
-            res = stmt.executeQuery();
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
             System.err.println("SQLException: " + e.getMessage());
@@ -174,7 +204,11 @@ public class DBWrapper implements Wrapper{
     @Override
     public boolean deleteQuestionBylD(int ID) {
         try {
-            PreparedStatement stmt = conn.prepareStatement("delete from question where qid = ?");
+            PreparedStatement stmt = conn.prepareStatement("delete from difficulty where qid = ?");
+            stmt.setInt(1, ID);
+            stmt.executeUpdate();
+
+            stmt = conn.prepareStatement("delete from question where qid = ?");
             stmt.setInt(1, ID);
             stmt.executeUpdate();
         } catch (SQLException e) {
@@ -293,8 +327,11 @@ public class DBWrapper implements Wrapper{
                 boolean isCorrect = res.getBoolean("iscorrect");
                 answers.add(new DBAnswer(id, text, isCorrect, q.getType()));
             }
+            if (answers.isEmpty()) {
+                throw new IllegalArgumentException("No Answers were found!");
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("No Answers were found!");
+            throw new RuntimeException(e.getMessage());
         }
         return answers;
     }
@@ -352,7 +389,7 @@ public class DBWrapper implements Wrapper{
                 String lastName = res.getString("lastname");
                 Teacher teacher = new Teacher(tid, firstName, lastName);
                 teacher.addSubjects(getSubjectsFromTeacher(tid));
-                teachers.add(new Teacher(tid, firstName, lastName));
+                teachers.add(teacher);
             }
 
         } catch (SQLException e) {
@@ -370,7 +407,22 @@ public class DBWrapper implements Wrapper{
 
     @Override
     public List<Subject> getSubjectsFromTeacher(int tid) {
-        return null;
+        List<Subject> subjects = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select sid from teacher_subject where tid = ?");
+            stmt.setInt(1, tid);
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                int sid = res.getInt("sid");
+                subjects.add(Subject.toSubject(sid));
+            }
+        } catch (SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("No Subjects were found!");
+        }
+        return subjects;
     }
 
     @Override
@@ -389,13 +441,71 @@ public class DBWrapper implements Wrapper{
     }
   
     public int addExam(String creationDate) {
-        return -1;
-    }//TODO
+        int eid = -1;
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into exam (sid, tid) values (?, ?) returning eid");
+            stmt.setInt(1, selectedSubject.getID());
+            stmt.setInt(2, teacher.getID());
+            //stmt.setString(3, creationDate);
+            ResultSet res = stmt.executeQuery();
+            if (res.next()) {
+                eid = res.getInt("eid");
+            }
+        }catch(SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to add exam!");
+        }
+        return eid;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
 
     @Override
     public boolean addQuestionToExam(int qid, int eid) {
-        return false;
-    }//TODO
+        try {
+            PreparedStatement stmt = conn.prepareStatement("insert into question_exam (eid, qid) values (?, ?)");
+            stmt.setInt(1, eid);
+            stmt.setInt(2, qid);
+            stmt.executeUpdate();
+        }catch(SQLException e) {
+            System.err.println("SQLException: " + e.getMessage());
+            System.err.println("SQLState: " + e.getSQLState());
+            System.err.println("VendorError: " + e.getErrorCode());
+            throw new RuntimeException("Failed to add question to exam!");
+        }
+        return true;
+    }
+
+    @Override
+    public List<Question> getQuestionsFromExam(int eid) {
+        List<Question> questions = new ArrayList<>();
+        try {
+            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question_exam where eid = ?) natural join question as question natural join difficulty) natural join type");
+            stmt.setInt(1, eid);
+            ResultSet res = stmt.executeQuery();
+            while (res.next()) {
+                int id = res.getInt("qid");
+                String text = res.getString("text");
+                String difficulty = res.getString("difficulty");
+                QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
+                questions.add(new DBQuestion(id, text, Difficulty.valueOf(difficulty), type));
+            }
+            if(questions.isEmpty()){
+                throw new IllegalArgumentException("No Questions were added to exam yet!");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+        return questions;
+    }
 
     @Override
     public Exam getExamByID(int eid) {

@@ -1,6 +1,7 @@
 package dbproject.DBClasses;
 
 import dbproject.Answer;
+import dbproject.Difficulty;
 import dbproject.Question;
 
 import java.lang.reflect.Type;

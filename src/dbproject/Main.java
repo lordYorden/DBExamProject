@@ -2,7 +2,7 @@ package dbproject;
 
 import dbproject.DBClasses.*;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,13 +23,65 @@ public class Main {
             System.out.print(question);
             try {
                 System.out.println("Answers:");
+                int i = 1;
                 for (Answer answer : db.getAnswersFromQuestion(question)) {
-                    System.out.println(answer);
+                    System.out.format("%d) %s\n",i, answer);
+                    i++;
                 }
-            } catch (Exception e) {
+                System.out.println();
+            } catch (IllegalArgumentException e) {
                 System.out.println("No answers were added yet!\n");
             }
         }
+    }
+
+    public static void printAllAnswers() {
+        List<Answer> answers =  db.getAllAnswers();
+        for (Answer value : answers) {
+            DBAnswer answer = (DBAnswer) value;
+            answer.setShowFullDetails(true);
+            System.out.println(answer);
+        }
+    }
+
+    public static void printAnswersToQuestion(Question question){
+        List<Answer> answers = db.getAnswersFromQuestion(question);
+        for (Answer answer : answers) {
+            System.out.println(answer);
+        }
+    }
+
+    public static Subject selectASubjectFromTeacher(Teacher teacher, Scanner input) {
+        Subject subject = null;
+        boolean wantToTeach = false;
+        do {
+            try {
+                if (teacher.getSubjects() != null && !teacher.getSubjects().isEmpty()) {
+                    System.out.println("You are currently teaching the following subjects:");
+                    for (Subject s : teacher.getSubjects()) {
+                        System.out.format("%d. %s\n", s.getID(), s);
+                    }
+
+                    System.out.println("Want to teach a new subject? (true/false)");
+                    wantToTeach = input.nextBoolean();
+                }else {
+                    System.out.println("You are not currently teaching any subjects.");
+                    wantToTeach = true;
+                }
+
+                if(wantToTeach) {
+                    subject = Subject.getSubjectFromUser(Subject.values(), input);
+                    db.addSubjectToTeacher(teacher.getID(), subject);
+                    teacher.addSubject(subject);
+                }else{
+                    subject = Subject.getSubjectFromUser(teacher.getSubjects().toArray(new Subject[0]), input);
+                }
+            } catch (RuntimeException e) {
+                System.err.println("Error! " + e.getMessage());
+                subject = null;
+            }
+        } while (subject == null);
+        return subject;
     }
 
     static final DBWrapper db = new DBWrapper();
@@ -50,23 +102,11 @@ public class Main {
             int tid = db.addTeacher(teacher);
             teacher.setID(tid);
         }
-        Subject subject = null;
 
-        do {
-            try {
-                if (teacher.getSubjects() != null && !teacher.getSubjects().isEmpty()) {
-                    subject = Subject.getSubjectFromUser(teacher.getSubjects().toArray(new Subject[0]), input);
-                } else {
-                    System.out.println("You are not currently teaching any subjects.");
-                    subject = Subject.getSubjectFromUser(Subject.values(), input);
-                }
-                db.addSubjectToTeacher(teacher.getID(), subject);
-            } catch (RuntimeException e) {
-                System.err.println("Error! " + e.getMessage());
-                subject = null;
-            }
-        } while (subject == null);
+        Subject subject = selectASubjectFromTeacher(teacher, input);
 
+        db.setSelectedSubject(subject);
+        db.setTeacher(teacher);
         final int EXIT = -1;
         int selction = 0;
 
@@ -84,14 +124,16 @@ public class Main {
                     case 2: {
                         System.out.println("Enter the answer:");
                         String answer = input.nextLine();
-                        Syste m.out.println("Enter the type of the question:");
+                        System.out.println("Enter the type of the question:");
                         QuestionType type = QuestionType.getQuestionTypeFromUser(input);
                         db.addAnswer(answer, type);
                         break;
                     }
                     case 3: {
+                        printAllQuestionsFromSubject(subject);
                         System.out.println("Enter the question ID:");
                         int qid = input.nextInt();
+                        printAllAnswers();
                         System.out.println("Enter the answer ID:");
                         int aid = input.nextInt();
                         System.out.println("Is the answer correct? (true/false)");
@@ -104,25 +146,29 @@ public class Main {
                         String question = input.nextLine();
                         System.out.println("Enter the type of the question:");
                         QuestionType type = QuestionType.getQuestionTypeFromUser(input);
-
+                        Difficulty difficulty = Difficulty.getDifficultyFromUser(input);
+                        db.addQuestion(new DBQuestion(-1, question, difficulty, type));
                         break;
                     }
                     case 5: {
+                        printAllQuestionsFromSubject(subject);
                         System.out.println("Enter the question ID:");
                         int qid = input.nextInt();
+                        printAnswersToQuestion(db.getQuestionBylD(qid));
                         System.out.println("Enter the answer ID:");
                         int aid = input.nextInt();
                         db.deleteAnswerFromQuestion(qid, aid);
                         break;
                     }
                     case 6: {
+                        printAllQuestionsFromSubject(subject);
                         System.out.println("Enter the question ID:");
                         int qid = input.nextInt();
                         db.deleteQuestionBylD(qid);
                         break;
                     }
                     case 7: {
-                        //generateExam(input);
+                        generateExam(input);
                         break;
                     }
                     case EXIT: {
@@ -132,24 +178,50 @@ public class Main {
                     default:
                         System.out.println("Error! option dose not exist, Please try again!");
                 }
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 System.err.println("Error! " + e.getMessage());
             }
         } while (selction != EXIT);
         db.close();
     }
 
+    private static void generateExam(Scanner input) throws FileNotFoundException {
+
+        int numQuestions = 0;
+
+        do {
+            System.out.println("Enter the number of questions you want in the exam:");
+            numQuestions = input.nextInt();
+        } while (numQuestions <= 0 || numQuestions > db.getNumQuestions());
+
+        System.out.println("Do you we want to randomize the questions? (true/false)");
+        boolean randomize = input.nextBoolean();
+
+        DBExam exam = null;
+        if (randomize) {
+            exam = new DBAutomaticExam(numQuestions, db);
+        } else {
+            exam = new DBManualExam(numQuestions, input, db);
+        }
+
+        exam.createExam();
+        String path = exam.writeExam(false);
+        exam.writeExam( false);
+        System.out.println("Exam created successfully!\nYou can find it in: " + path);
+        exam.writeExam( true);
+
+    }
+
     public static void printMenu() {
-        System.out.println("\nWelcome to my Test Maker!");
+        System.out.println("\nWelcome to my Exam creation tool!");
         System.out.println("Please select an option: (-1 to exit)");
-        System.out.println("1. Display all of the question from the repo (and their answers)");
-        System.out.println("2. Add a new answers to the repo");
+        System.out.println("1. Display all of the question (and their answers)");
+        System.out.println("2. Add a new answers");
         System.out.println("3. Append an answer to an existing question");
         System.out.println("4. Add a new question");
-//		System.out.println("4. Update an exsisting question");
-//		System.out.println("5. Update an exsisting answer to a question");
         System.out.println("5. Delete an answers to a question");
         System.out.println("6. Delete a question");
         System.out.println("7. Generate a new test");
+        System.out.println("8. Change the subject");
     }
 }

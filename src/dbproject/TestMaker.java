@@ -9,7 +9,6 @@ import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
 //import dbproject.Repo.Subject;
-import dbproject.Question.Difficulty;
 
 public class TestMaker {
 
@@ -266,7 +265,7 @@ public class TestMaker {
 
 			System.out.println("Enter a question: ");
 			text = input.nextLine();
-			Question.Difficulty diff = getDifficultyFromUser(input);
+			Difficulty diff = getDifficultyFromUser(input);
 
 			if (selction != 0) {
 				System.out.println("Enter The school solution: ");

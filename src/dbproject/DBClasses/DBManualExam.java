@@ -8,14 +8,14 @@ import java.util.Scanner;
 public class DBManualExam extends DBExam {
     private final Scanner input;
 
-    public DBManualExam(int maxNumQue, Scanner input, DBWrapper dbWrapper) throws NumOfQuestionsException {
+    public DBManualExam(int maxNumQue, Scanner input, DBWrapper dbWrapper) {
         super(maxNumQue, dbWrapper);
         this.input = input;
     }
 
     @Override
     public void createExam() {
-        Subject subject = db.getSubject();
+        Subject subject = db.getSelectedSubject();
         if (subject == null) {
             System.out.println("Error! No subject selected.");
             return;
@@ -61,7 +61,7 @@ public class DBManualExam extends DBExam {
     }
 
     private void displayAllQuestions() {
-        List<Question> questions = db.getAllQuestionsFromSubject(db.getSubject());
+        List<Question> questions = db.getAllQuestionsFromSubject(db.getSelectedSubject());
         System.out.println("Available questions:");
         for (Question q : questions) {
             System.out.println(q);

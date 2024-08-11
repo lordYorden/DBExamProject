@@ -49,7 +49,7 @@ public enum Subject {
         int selection = 0;
         do {
             System.out.println("Select a subject:");
-            for (Subject s : Subject.values()) {
+            for (Subject s : subjects) {
                 System.out.println(s.getID() + ". " + s.getSubject());
             }
             selection = input.nextInt();

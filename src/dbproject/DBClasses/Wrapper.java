@@ -14,6 +14,7 @@ public interface Wrapper {
     public List<Answer> getAllAnswers();
     public int getNumAnswers();
     public Question getQuestionBylD(int ID);
+    public Question getRandomQuestionOfSubject(Subject subject);
     public int getNumQuestions();
     public int addQuestion(Question question);
     public boolean deleteQuestionBylD(int ID);
@@ -29,9 +30,10 @@ public interface Wrapper {
     public boolean deleteTeacherByID(int ID);
     public int addExam(String creationDate);
     public boolean addQuestionToExam(int qid, int eid);
+    public List<Question> getQuestionsFromExam(int eid);
     public Exam getExamByID(int eid);
     public void close();
-    public Subject getSubject();
-    public void setSubject(Subject subject);
+    public Subject getSelectedSubject();
+    public void setSelectedSubject(Subject selectedSubject);
 
 }

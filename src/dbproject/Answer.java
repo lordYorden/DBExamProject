@@ -68,8 +68,6 @@ public class Answer implements Serializable {
 			builder.append(isCorrect ? "x" : " ");
 			builder.append("]");
 		}
-
-		builder.append("\n");
 		return builder.toString();
 	}
 

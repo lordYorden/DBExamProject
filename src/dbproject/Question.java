@@ -3,8 +3,6 @@ package dbproject;
 import java.io.Serializable;
 
 public class Question implements Serializable{
-	
-	public enum Difficulty {Easy, Moderate, Hard}
 	private static int numQuestions = 1;
 	
 	protected String text;
