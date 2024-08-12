@@ -73,14 +73,9 @@ Create Table Question_Answer(
 	CONSTRAINT fk_aid FOREIGN KEY (AID) REFERENCES Answer (AID)
 );
 
+--fix teacher
 alter table teacher
 add constraint teacher_unique unique(tid, firstname, lastname);
-
--- alter table question
--- add numAnswers int DEFAULT 0,
--- add numCorrectAnswers int DEFAULT 0
-
--- select * from question 
 
 
 

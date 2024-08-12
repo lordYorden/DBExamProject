@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public enum QuestionType {
     OpenEnded(1, "Open Ended"),
-    SingleSelection(2, "Single Selection"),
-    MultipleChoice(3, "Multiple choice");
+    SingleSelection(2, "Single Selection");
+    //MultipleChoice(3, "Multiple choice");
     private int id;
     private String type;
 
@@ -18,7 +18,7 @@ public enum QuestionType {
         return switch (id) {
             case 1 -> OpenEnded;
             case 2 -> SingleSelection;
-            case 3 -> MultipleChoice;
+            //case 3 -> MultipleChoice;
             default -> null;
         };
     }
@@ -27,7 +27,7 @@ public enum QuestionType {
         return switch (type) {
             case "Open Ended" -> OpenEnded;
             case "Single Selection" -> SingleSelection;
-            case "Multiple choice" -> MultipleChoice;
+            //case "Multiple choice" -> MultipleChoice;
             default -> null;
         };
     }

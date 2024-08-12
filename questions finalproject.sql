@@ -14,7 +14,7 @@
 --Moderate
 --Hard
 
-TRUNCATE TABLE type, question, answer, difficulty,question_exam, question_answer RESTART IDENTITY;
+--TRUNCATE TABLE type, question, answer, difficulty,question_exam, question_answer, type, subject, teacher_subject, exam, question_exam RESTART IDENTITY;
 insert into Type (type) values ('Open Ended'), ('Single Selection'), ('Multiple choice');
 select * from type;
 
@@ -38,7 +38,7 @@ select * from subject;
 insert into Question (text, typeid, sid) values 
 ('What is the name of the biggest technology company in South Korea?', 3, 4)
 ,('What is the name of the largest desert in the world?', 3, 4)
-,('What is the name of the current president of the United States?', 3, 4);
+,('What is the name of the current president of the United States?', 1, 4);
 
 insert into Question (text, typeid, sid) values 
 ('what is the capital of France?', 1, 4)
@@ -143,8 +143,6 @@ insert into difficulty (qid, difficulty) values
 (26, 'Moderate'),
 (27, 'Moderate');
 
-select * from ((question natural join subject) natural join type) natural join difficulty
-
 --Answers
 --Geography
 insert into answer (typeid, text) values 
@@ -203,13 +201,42 @@ insert into answer (typeid, text) values
 (1,'a² + b² = c²'),
 (3,'2');
 
--- select * from answer natural join subject
+--fixes
+insert into answer (typeid, text) values 
+(3, '1'),
+(3,'21'),
+(3,'4'),
+(3,'11'),
+(3,'Humerus'),
+(3, 'Tibia'),
+(3, 'Pelvis'),
+(3, 'about 10,000'),
+(3, 'about 30,000'),
+(3, 'about 50,000'),
+(3, 'Tn'),
+(3, 'Tu'),
+(3, 'Tg'),
+(3, 'Barometer'),
+(3, 'Hygrometer'),
+(3, 'Thermometer'),
+(3,'Venus'),
+(3,'Mars'),	
+(3,'Pluto');
 
--- select * from teacher natural join teacher_subject
+--fixes
+update question
+set typeid = 2
+where typeid = 3;
 
--- select * from subject
--- select * from exam
+update answer
+set typeid = 2
+where typeid = 3;
 
+delete FROM type
+where type = 'Multiple choice';
+
+--to check
+--select * from ((question natural join subject) natural join type) natural join difficulty;
 
 
 
