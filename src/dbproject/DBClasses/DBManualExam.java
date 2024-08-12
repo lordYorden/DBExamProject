@@ -21,7 +21,6 @@ public class DBManualExam extends DBExam {
                 DBQuestion question = selectQuestionFromDatabase();
                 modifyAnswersIfNeeded(question);
                 addQuestionToList(question, eid);
-                currNumQue++;
             } catch (RuntimeException e) {
                 System.err.println("Error! " + e.getMessage());
             }
@@ -62,6 +61,8 @@ public class DBManualExam extends DBExam {
                     break;
                 case 2:
                     deleteAnswerFromAQuestion(question);
+                    break;
+                case -1:
                     break;
                 default:
                     System.err.println("Invalid choice!");

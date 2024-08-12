@@ -4,8 +4,8 @@ import java.util.Scanner;
 
 public enum Subject {
     Math(1, "Math"),
-    Science(2, "Science"),
-    History(3, "History"),
+    History(2, "History"),
+    Science(3, "Science"),
     Geography(4, "Geography");
 
     int ID;
@@ -27,8 +27,8 @@ public enum Subject {
     public static Subject toSubject(int ID) {
         return switch (ID) {
             case 1 -> Math;
-            case 2 -> Science;
-            case 3 -> History;
+            case 2 -> History;
+            case 3 -> Science;
             case 4 -> Geography;
             default -> null;
         };

@@ -1,11 +1,11 @@
 Create Table Type(
 	TypeID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	Name text
+	Type text
 );
 
 Create Table Subject(
 	SID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	Name text
+	Subject text
 );
 
 create table Question(
@@ -70,5 +70,8 @@ Create Table Question_Answer(
 	CONSTRAINT fk_qid FOREIGN KEY (QID) REFERENCES Question (QID),
 	CONSTRAINT fk_aid FOREIGN KEY (AID) REFERENCES Answer (AID)
 );
+
+alter table teacher
+add constraint teacher_unique unique(tid, firstname, lastname)
 
 

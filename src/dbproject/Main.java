@@ -46,7 +46,8 @@ public class Main {
 
     public static void printAnswersToQuestion(Question question){
         List<Answer> answers = db.getAnswersFromQuestion(question);
-        for (Answer answer : answers) {
+        for (Answer value : answers) {
+            DBAnswer answer = (DBAnswer) value;
             System.out.println(answer);
         }
     }
