@@ -1,9 +1,6 @@
 package dbproject.DBClasses;
 
-import dbproject.Answer;
-import dbproject.Exam;
-import dbproject.Question;
-import dbproject.Subject;
+import dbproject.*;
 
 import java.util.List;
 
@@ -35,5 +32,6 @@ public interface Wrapper {
     public void close();
     public Subject getSelectedSubject();
     public void setSelectedSubject(Subject selectedSubject);
+    public boolean updateQuestionDifficulty(Question question, Difficulty newDifficulty);
 
 }

@@ -38,6 +38,22 @@ public class DBWrapper implements Wrapper{
     }
 
     @Override
+    public boolean updateQuestionDifficulty(Question question, Difficulty newDifficulty) {
+        try {
+            PreparedStatement stmt = conn.prepareStatement("update difficulty set difficulty = ? where qid = ?");
+            stmt.setString(1, newDifficulty.name());
+            stmt.setInt(2, question.getId());
+            stmt.executeUpdate();
+        }catch(SQLException ex) {
+            System.err.println("SQLException: " + ex.getMessage());
+            System.err.println("SQLState: " + ex.getSQLState());
+            System.err.println("VendorError: " + ex.getErrorCode());
+            throw new RuntimeException(ex.getMessage());
+        }
+        return true;
+    }
+
+    @Override
     public int addAnswer(String answer, QuestionType type) {
         int aid = -1;
         try {
@@ -61,7 +77,7 @@ public class DBWrapper implements Wrapper{
     public Question getQuestionBylD(int ID) {
         DBQuestion question = null;
         try {
-            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID from ((select * from question where qid = ?) as question natural join difficulty) natural join type");
+            PreparedStatement stmt = conn.prepareStatement("select qid,text,difficulty,typeID,numanswers,numcorrectanswers from ((select * from question where qid = ?) as question natural join difficulty) natural join type");
             stmt.setInt(1, ID);
             ResultSet res = stmt.executeQuery();
 
@@ -70,7 +86,11 @@ public class DBWrapper implements Wrapper{
                 String text = res.getString("text");
                 String difficulty = res.getString("difficulty");
                 QuestionType type = QuestionType.toQuestionType(res.getInt("typeID"));
+                int numAnswers = res.getInt("numanswers");
+                int numCorrectAnswers = res.getInt("numcorrectanswers");
                 question = new DBQuestion(id, text, Difficulty.valueOf(difficulty), type);
+                question.setNumAnswers(numAnswers);
+                question.setNumCorrectAnswers(numCorrectAnswers);
             }else{
                 throw new RuntimeException("Question with an id of " + ID + " was not found!");
             }

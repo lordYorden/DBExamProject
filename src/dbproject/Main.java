@@ -179,6 +179,15 @@ public class Main {
                         db.setSelectedSubject(subject);
                         break;
                     }
+                    case 9:
+                        printAllQuestionsFromSubject(subject);
+                        System.out.println("Enter the question ID:");
+                        int qid = input.nextInt();
+                        Question question = db.getQuestionBylD(qid);
+                        System.out.println("Enter the new difficulty:");
+                        Difficulty newDifficulty = Difficulty.getDifficultyFromUser(input);
+                        db.updateQuestionDifficulty(question, newDifficulty);
+                        break;
                     case EXIT: {
                         System.out.println("Goodbye!");
                         break;
@@ -231,5 +240,6 @@ public class Main {
         System.out.println("6. Delete a question");
         System.out.println("7. Generate a new test");
         System.out.println("8. Change the subject");
+        System.out.println("9. update question difficulty");
     }
 }
