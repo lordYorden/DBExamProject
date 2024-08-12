@@ -10,7 +10,7 @@ public class Teacher {
    private  String firstName;
    private String lastName;
    private List<Subject> subjects;
-   private List<Exam> exams;
+   //private List<Exam> exams;
 
    private int ID;
 
@@ -19,7 +19,7 @@ public class Teacher {
         this.firstName = firstName;
         this.lastName = lastName;
         this.subjects = new ArrayList<>();
-        this.exams = new ArrayList<>();
+//        this.exams = new ArrayList<>();
     }
 
     public Teacher(int tid, String firstName, String lastName) {
@@ -62,12 +62,4 @@ public class Teacher {
         this.ID = ID;
     }
 
-    /*public boolean createExam(String subject, String examName) {
-        if(subject.contains(subject)) {
-            exams.add(examName);
-            return true;
-        } else {
-            return false;
-        }
-    }*/
 }

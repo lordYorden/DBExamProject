@@ -34,10 +34,6 @@ public class DBAnswer extends Answer {
         return sb.toString();
     }
 
-    public boolean isShowFullDetails() {
-        return showFullDetails;
-    }
-
     public void setShowFullDetails(boolean showFullDetails) {
         this.showFullDetails = showFullDetails;
     }

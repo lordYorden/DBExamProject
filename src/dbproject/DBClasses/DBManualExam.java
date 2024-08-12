@@ -35,17 +35,6 @@ public class DBManualExam extends DBExam {
         return (DBQuestion) db.getQuestionBylD(questionId);
     }
 
-    /*@Override
-    protected void addQuestionToList(DBQuestion question,int eid) {
-        if(question.getType() == QuestionType.MultipleChoice){
-            DBQuestion updatedQuestion = (DBQuestion) db.getQuestionBylD(question.getId());
-        }
-
-
-
-        db.addQuestionToExam(question.getId(),eid);
-    }*/
-
     private void modifyAnswersIfNeeded(DBQuestion question) {
         int choice = -1;
         do {

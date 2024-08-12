@@ -111,15 +111,15 @@ public class Main {
         db.setSelectedSubject(subject);
 
         final int EXIT = -1;
-        int selction = 0;
+        int selection = 0;
 
         do {
             printMenu();
-            selction = input.nextInt();
+            selection = input.nextInt();
             input.nextLine();
 
             try {
-                switch (selction) {
+                switch (selection) {
                     case 1: {
                         printAllQuestionsFromSubject(subject);
                         break;
@@ -198,7 +198,7 @@ public class Main {
             } catch (Exception e) {
                 System.err.println("Error! " + e.getMessage());
             }
-        } while (selction != EXIT);
+        } while (selection != EXIT);
         db.close();
     }
 

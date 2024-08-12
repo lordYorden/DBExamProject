@@ -9,7 +9,7 @@ import java.util.List;
 public class DBWrapper implements Wrapper{
     private Subject selectedSubject;
     private Teacher teacher;
-    //PostgreSQL connection
+    //PostgresSQL connection
     Connection conn = null;
     //Class.forName("org.postgresql.Driver");
     final String dbUrl = "jdbc:postgresql:finalproject";

@@ -6,8 +6,8 @@ public enum QuestionType {
     OpenEnded(1, "Open Ended"),
     SingleSelection(2, "Single Selection");
     //MultipleChoice(3, "Multiple choice");
-    private int id;
-    private String type;
+    private final int id;
+    private final String type;
 
     QuestionType(int id, String type) {
         this.id = id;
