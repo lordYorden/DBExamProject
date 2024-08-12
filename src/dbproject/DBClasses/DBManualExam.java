@@ -75,28 +75,36 @@ public class DBManualExam extends DBExam {
         System.out.println("Available answers:");
         for (Answer value : answers) {
             DBAnswer a = (DBAnswer) value;
+            a.setShowFullDetails(true);
             System.out.println(a);
         }
 
         System.out.println("Enter the ID of the answer you want to add (or -1 to stop):");
         int answerId = input.nextInt();
+        input.nextLine();
         if(answerId == -1) {
             return;
         }
+
         System.out.println("Is this the correct answer? (yes/no)");
         boolean isCorrect = input.nextLine().equalsIgnoreCase("yes");
+
         db.addAnswerToQuestion(question.getId(), answerId, isCorrect);
     }
 
     public void deleteAnswerFromAQuestion(DBQuestion question)  {
         List<Answer> answers = db.getAnswersFromQuestion(question);
         System.out.println("Available answers:");
-        for (Answer a : answers) {
+        for (Answer value : answers) {
+            DBAnswer a = (DBAnswer) value;
+            a.setShowFullDetails(true);
             System.out.println(a);
         }
 
         System.out.println("Enter the ID of the answer you want to delete (or -1 to stop):");
         int answerId = input.nextInt();
+        input.nextLine();
+
         if(answerId == -1) {
             return;
         }
