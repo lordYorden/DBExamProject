@@ -13,6 +13,8 @@ create table Question(
 	Text TEXT,
 	SID int,
 	TypeID int,
+	numAnswers int DEFAULT 0,
+	numCorrectAnswers int DEFAULT 0,
 	CONSTRAINT fk_sid FOREIGN KEY (SID) REFERENCES Subject (SID),
 	CONSTRAINT fk_typeId FOREIGN KEY (TypeID) REFERENCES Type (TypeID)
 );
@@ -72,6 +74,14 @@ Create Table Question_Answer(
 );
 
 alter table teacher
-add constraint teacher_unique unique(tid, firstname, lastname)
+add constraint teacher_unique unique(tid, firstname, lastname);
+
+-- alter table question
+-- add numAnswers int DEFAULT 0,
+-- add numCorrectAnswers int DEFAULT 0
+
+-- select * from question 
+
+
 
 
