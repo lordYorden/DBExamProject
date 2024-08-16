@@ -32,9 +32,9 @@ public abstract class DBExam implements Examable {
         StringBuilder sb = new StringBuilder();
         sb.append("Exam created on: ").append(creationDate).append("\n\n");
 
+
         List<Question> questions = db.getQuestionsFromExam(eid);
         for (Question value : questions) {
-
 
             DBQuestion q = (DBQuestion) value;
             sb.append(q.getText()).append("\n");
@@ -51,9 +51,14 @@ public abstract class DBExam implements Examable {
             try {
                 answers = db.getAnswersFromQuestion(q);
                 for (Answer a : answers) {
-                    a.setDisplaySolution(showSolution);
-                    i++;
-                    sb.append(i).append(") ").append(a).append("\n");
+
+                    if(q.getType() == QuestionType.SingleSelection) {
+                        a.setDisplaySolution(showSolution);
+                        i++;
+                        sb.append(i).append(") ").append(a).append("\n");
+                    }else{
+                        sb.append("Answer: ").append(a).append("\n");
+                    }
                 }
             } catch (Exception e) {
                 sb.append("No answers were added yet!\n");
