@@ -8,6 +8,10 @@ import java.util.Scanner;
 
 public class Main {
 
+    //put your own username and password here
+    private static final String user = "postgres";
+    private static final String password = "1234";
+
     public static Teacher findTeacher(String firstname, String lastname) {
         List<Teacher> teachers = db.getAllTeachers();
         for (Teacher teacher : teachers) {
@@ -87,12 +91,12 @@ public class Main {
         return subject;
     }
 
-    static final DBWrapper db = new DBWrapper();
+    static final DBWrapper db = new DBWrapper(user, password);
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Teacher teacher = null;
 
-        System.out.println("Enter your full name:");
+        System.out.println("Enter your full name (first and last):");
         String firstname = input.next();
         String lastname = input.next();
 

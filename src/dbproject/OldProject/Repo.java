@@ -1,4 +1,8 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.Answer;
+import dbproject.Question;
+import dbproject.Subject;
 
 import java.io.Serializable;
 import java.util.Arrays;

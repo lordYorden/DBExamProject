@@ -1,4 +1,7 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.Exam;
+import dbproject.Question;
 
 import java.util.Scanner;
 

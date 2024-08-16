@@ -1,4 +1,6 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,7 +10,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
-//import dbproject.Repo.Subject;
+//import dbproject.OldProject.Repo.Subject;
 
 public class TestMaker {
 
@@ -16,7 +18,7 @@ public class TestMaker {
 		Scanner input = new Scanner(System.in);
 
 		Subject subject = Subject.getSubjectFromUser(Subject.values(), input);
-		Repo repo = null;// new dbproject.Repo(subject);
+		Repo repo = null;// new dbproject.OldProject.Repo(subject);
 		final int EXIT = -1;
 		int selction = 0;
 
@@ -80,9 +82,9 @@ public class TestMaker {
 		ObjectInputStream toLoad = new ObjectInputStream(new FileInputStream(filename));
 		Repo repo = (Repo) toLoad.readObject();
 //		if(obj != null) {
-//			repo = (dbproject.Repo) obj;
+//			repo = (dbproject.OldProject.Repo) obj;
 //		} else {
-//			repo = new dbproject.Repo(subject);
+//			repo = new dbproject.OldProject.Repo(subject);
 //		}
 		toLoad.close();
 		Question.setNumQuestions(repo.getNumQuestions() + 1);
@@ -476,7 +478,7 @@ public class TestMaker {
 //	 * @param repo the program's repository
 //	 * @return the question that was selected
 //	 */
-//	private static dbproject.Question selectQuestionFromRepo(dbproject.Repo repo) {
+//	private static dbproject.Question selectQuestionFromRepo(dbproject.OldProject.Repo repo) {
 //		Scanner input = new Scanner(System.in);
 //		dbproject.Question que = null;
 //		int selection = 0;
@@ -501,7 +503,7 @@ public class TestMaker {
 //	 * @param repo the program's repository
 //	 * @return the answers that was selected
 //	 */
-//	private static String selectAnswerFromRepo(dbproject.Repo repo) {
+//	private static String selectAnswerFromRepo(dbproject.OldProject.Repo repo) {
 //		Scanner input = new Scanner(System.in);
 //		String ans = null;
 //		int selection = 0;

@@ -1,4 +1,4 @@
-package dbproject;
+package dbproject.OldProject;
 
 public class ExamCreationException extends Exception {
 
@@ -7,6 +7,6 @@ public class ExamCreationException extends Exception {
 	}
 	
 	public ExamCreationException() {
-		super("General dbproject.ExamCreationException: Failed to create an dbproject.Exam!");
+		super("General dbproject.OldProject.ExamCreationException: Failed to create an dbproject.Exam!");
 	}
 }

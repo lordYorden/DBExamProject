@@ -14,15 +14,15 @@ public class DBWrapper implements Wrapper{
     //Class.forName("org.postgresql.Driver");
     final String dbUrl = "jdbc:postgresql:finalproject";
 
-    public DBWrapper(Subject subject, Teacher teacher) {
-        this();
+    public DBWrapper(Subject subject, Teacher teacher, String user, String password) {
+        this(user, password);
         this.selectedSubject = subject;
         this.teacher = teacher;
     }
 
-    public DBWrapper() {
+    public DBWrapper(String user, String password) {
         try {
-            this.conn = DriverManager.getConnection(dbUrl, "postgres", "1234");
+            this.conn = DriverManager.getConnection(dbUrl, user, password);
         }catch(SQLException ex) {
             System.err.println("SQLException: " + ex.getMessage());
             System.err.println("SQLState: " + ex.getSQLState());

@@ -1,4 +1,4 @@
-package dbproject;
+package dbproject.OldProject;
 
 public class NumOfQuestionsException extends ExamCreationException {
 

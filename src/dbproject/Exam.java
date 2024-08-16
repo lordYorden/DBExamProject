@@ -1,5 +1,10 @@
 package dbproject;
 
+import dbproject.OldProject.MultiSelectQuestion;
+import dbproject.OldProject.NumOfAnswersException;
+import dbproject.OldProject.NumOfQuestionsException;
+import dbproject.OldProject.Repo;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -64,10 +69,6 @@ public abstract class Exam implements Examable {
 		return addQuestion((Question) queToAdd);
 	}
 
-	/**
-	 * @param displayAnswers whether to display the answers to every question
-	 * @return object values
-	 */
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < currNumQue; i++) {

@@ -14,7 +14,7 @@ public class Question implements Serializable{
 	 * C'tor
 	 * @param	text the question itself
 	 */
-	Question(String text, Difficulty difficulty) {
+	public Question(String text, Difficulty difficulty) {
 		this.text = text;
 		this.id = numQuestions++;
 		this.difficulty = difficulty;
