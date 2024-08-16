@@ -1,4 +1,7 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.Difficulty;
+import dbproject.Question;
 
 import java.io.Serializable;
 

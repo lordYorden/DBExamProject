@@ -1,4 +1,8 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.Answer;
+import dbproject.Exam;
+import dbproject.Question;
 
 import java.util.Random;
 
@@ -8,13 +12,13 @@ public class AutomaticExam extends Exam {
 	// private String[] generated;
 	// private int numGenrated;
 
-	public AutomaticExam(int maxNumQue) throws NumOfQuestionsException {
-		super(maxNumQue);
+	public AutomaticExam(Repo repo, int maxNumQue) throws NumOfQuestionsException {
+		super(repo, maxNumQue);
 		// this.generated = new String[4];
 	}
 
 	@Override
-	public void createExam(Repo repo) {
+	public void createExam() {
 		int maxRange = repo.getNumQuestions();
 		int genQue = 0;
 		for (int i = 0; i < questions.length; i++) {

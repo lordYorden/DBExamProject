@@ -1,11 +1,11 @@
 Create Table Type(
 	TypeID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	Name text
+	Type text
 );
 
 Create Table Subject(
 	SID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	Name text
+	Subject text
 );
 
 create table Question(
@@ -13,6 +13,8 @@ create table Question(
 	Text TEXT,
 	SID int,
 	TypeID int,
+	numAnswers int DEFAULT 0,
+	numCorrectAnswers int DEFAULT 0,
 	CONSTRAINT fk_sid FOREIGN KEY (SID) REFERENCES Subject (SID),
 	CONSTRAINT fk_typeId FOREIGN KEY (TypeID) REFERENCES Type (TypeID)
 );
@@ -28,7 +30,6 @@ Create Table Answer(
 	AID int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	TypeID int,
 	text text,
-	isCorrect boolean,
 	CONSTRAINT fk_typeId FOREIGN KEY (TypeID) REFERENCES Type (TypeID)
 );
 
@@ -62,5 +63,20 @@ Create Table Question_Exam(
 	CONSTRAINT fk_qid FOREIGN KEY (QID) REFERENCES Question (QID),
 	CONSTRAINT fk_eid FOREIGN KEY (EID) REFERENCES Exam (EID)
 );
+
+Create Table Question_Answer(
+	QID int,
+	AID int,
+	isCorrect boolean,
+	PRIMARY key(QID,AID),
+	CONSTRAINT fk_qid FOREIGN KEY (QID) REFERENCES Question (QID),
+	CONSTRAINT fk_aid FOREIGN KEY (AID) REFERENCES Answer (AID)
+);
+
+--fix teacher
+alter table teacher
+add constraint teacher_unique unique(tid, firstname, lastname);
+
+
 
 

@@ -3,8 +3,8 @@ package dbproject;
 import java.io.Serializable;
 
 public class Answer implements Serializable {
-	private String text;
-	private boolean isCorrect;
+	protected String text;
+	protected boolean isCorrect;
 	private boolean displaySolution;
 
 	/**
@@ -68,8 +68,6 @@ public class Answer implements Serializable {
 			builder.append(isCorrect ? "x" : " ");
 			builder.append("]");
 		}
-
-		builder.append("\n");
 		return builder.toString();
 	}
 

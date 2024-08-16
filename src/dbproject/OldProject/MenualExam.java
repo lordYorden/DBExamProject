@@ -1,4 +1,7 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.Exam;
+import dbproject.Question;
 
 import java.util.Scanner;
 
@@ -6,13 +9,13 @@ public class MenualExam extends Exam {
 
 	private Scanner input;
 	
-	public MenualExam(int maxNumQue, Scanner input) throws NumOfQuestionsException {
-		super(maxNumQue);
+	public MenualExam(Repo repo, int maxNumQue, Scanner input) throws NumOfQuestionsException {
+		super(repo, maxNumQue);
 		this.input = input;
 	}
 
 	@Override
-	public void createExam(Repo repo) {
+	public void createExam() {
 		Question fromRepo = null;
 
 		for (int i = 0; i < this.questions.length; i++) {

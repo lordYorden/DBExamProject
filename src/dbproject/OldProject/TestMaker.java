@@ -1,4 +1,6 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,16 +10,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
 
-import dbproject.Repo.Subject;
-import dbproject.Question.Difficulty;
+//import dbproject.OldProject.Repo.Subject;
 
 public class TestMaker {
 
 	public static void main(String[] args) throws IOException {
 		Scanner input = new Scanner(System.in);
 
-		Subject subject = getSubjectFromUser(input);
-		Repo repo = null;// new dbproject.Repo(subject);
+		Subject subject = Subject.getSubjectFromUser(Subject.values(), input);
+		Repo repo = null;// new dbproject.OldProject.Repo(subject);
 		final int EXIT = -1;
 		int selction = 0;
 
@@ -81,9 +82,9 @@ public class TestMaker {
 		ObjectInputStream toLoad = new ObjectInputStream(new FileInputStream(filename));
 		Repo repo = (Repo) toLoad.readObject();
 //		if(obj != null) {
-//			repo = (dbproject.Repo) obj;
+//			repo = (dbproject.OldProject.Repo) obj;
 //		} else {
-//			repo = new dbproject.Repo(subject);
+//			repo = new dbproject.OldProject.Repo(subject);
 //		}
 		toLoad.close();
 		Question.setNumQuestions(repo.getNumQuestions() + 1);
@@ -126,17 +127,17 @@ public class TestMaker {
 		Exam exam = null;
 		try {
 			if (isAuto) {
-				exam = new AutomaticExam(numQue);
+				exam = new AutomaticExam(repo, numQue);
 				System.out.println("is auto");
 			} else {
-				exam = new MenualExam(numQue, input);
+				exam = new MenualExam(repo, numQue, input);
 			}
 
 		} catch (NumOfQuestionsException e) {
 			System.out.println("Error! " + e.getMessage());
 		}
 
-		exam.createExam(repo);
+		exam.createExam();
 
 		exam.writeExam(true); // write solution
 		String examPath = exam.writeExam(false); // write exam
@@ -266,7 +267,7 @@ public class TestMaker {
 
 			System.out.println("Enter a question: ");
 			text = input.nextLine();
-			Question.Difficulty diff = getDifficultyFromUser(input);
+			Difficulty diff = getDifficultyFromUser(input);
 
 			if (selction != 0) {
 				System.out.println("Enter The school solution: ");
@@ -477,7 +478,7 @@ public class TestMaker {
 //	 * @param repo the program's repository
 //	 * @return the question that was selected
 //	 */
-//	private static dbproject.Question selectQuestionFromRepo(dbproject.Repo repo) {
+//	private static dbproject.Question selectQuestionFromRepo(dbproject.OldProject.Repo repo) {
 //		Scanner input = new Scanner(System.in);
 //		dbproject.Question que = null;
 //		int selection = 0;
@@ -502,7 +503,7 @@ public class TestMaker {
 //	 * @param repo the program's repository
 //	 * @return the answers that was selected
 //	 */
-//	private static String selectAnswerFromRepo(dbproject.Repo repo) {
+//	private static String selectAnswerFromRepo(dbproject.OldProject.Repo repo) {
 //		Scanner input = new Scanner(System.in);
 //		String ans = null;
 //		int selection = 0;
@@ -576,7 +577,7 @@ public class TestMaker {
 	 * @param input where to read the subject from
 	 * @return subject from the user
 	 */
-	private static Subject getSubjectFromUser(Scanner input) { // sad i am not allowed to use generics
+	/*private static Subject getSubjectFromUser(Scanner input) { // sad i am not allowed to use generics
 		Subject[] subjects = Subject.values();
 		int subject = 0;
 		boolean isValid = false;
@@ -597,6 +598,6 @@ public class TestMaker {
 		} while (!isValid);
 
 		return subjects[subject];
-	}
+	}*/
 
 }

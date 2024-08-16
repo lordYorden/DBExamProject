@@ -3,8 +3,6 @@ package dbproject;
 import java.io.Serializable;
 
 public class Question implements Serializable{
-	
-	public enum Difficulty {Easy, Moderate, Hard}
 	private static int numQuestions = 1;
 	
 	protected String text;
@@ -16,11 +14,16 @@ public class Question implements Serializable{
 	 * C'tor
 	 * @param	text the question itself
 	 */
-	Question(String text, Difficulty difficulty) {
+	public Question(String text, Difficulty difficulty) {
 		this.text = text;
 		this.id = numQuestions++;
 		this.difficulty = difficulty;
 		this.displaySolution = false;
+	}
+
+	public Question(int id, String text, Difficulty difficulty) {
+		this(text, difficulty);
+		this.id = id;
 	}
 	
 	public static void setNumQuestions(int numQuestions) {
@@ -80,5 +83,9 @@ public class Question implements Serializable{
 		Question que = (Question) obj;
 		
 		return que.id == this.id && que.text == this.text && this.difficulty == que.difficulty;
+	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
 	}
 }

@@ -1,4 +1,8 @@
-package dbproject;
+package dbproject.OldProject;
+
+import dbproject.Answer;
+import dbproject.Question;
+import dbproject.Subject;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -10,9 +14,9 @@ import java.util.Scanner;
 
 public class Repo implements Serializable {
 
-	public enum Subject {
+	/*public enum Subject {
 		Math, Science, History, Geography
-	}
+	}*/
 
 	private String[] answers;
 	private Question[] questions;
